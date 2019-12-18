@@ -7,7 +7,10 @@
 
 // use function require to import dependencies
 // note that `./` will look for a relative-path based file, `/` will look for an absolute-path based file while no slash will look for a global file
-const http = require('http')
+const http = require('http');
+
+const routes = require('./routes');
+
 
 const server3000 = http.createServer((req, res) => {
     console.log(req)
@@ -27,6 +30,7 @@ server3000.listen(3000);
 
 const server8000 = http.createServer((req, res) => {
     const url = req.url;
+    const method = req.method;
     res.setHeader('Content-Type', 'text/html');
     if (url === '/') {
         res.write('<html>');
@@ -34,13 +38,36 @@ const server8000 = http.createServer((req, res) => {
         res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Submit</button></form></body>')
         res.write('<html/>');
         return res.end();
+    } else if (url === '/message' && method === 'POST') {
+        const body = [];
+        // on() => listen to events
+        req.on('data', e => {
+            body.push(e);
+        });
+        req.on('end', () => {
+            const parsedBody = Buffer.concat(body).toString();
+            const message = parsedBody.split('=')[1];
+            // writeFileSynce is asynchronous
+            // fs.writeFileSync('message.txt', message);
+            // third argument is for function when we are done writing the file
+            fs.writeFile('message.txt', message, err => {
+                res.statusCode = 302;
+                res.setHeader('Location', '/');
+                return res.end();
+            });
+        })
+
     } else {
         res.write('<html>');
         res.write('<head><title>Thank you</title></head>');
         res.write('<body><h1>Thank you very much for your respond</h1></body>')
         res.write('<html/>');
-        res.end();
+        return res.end();
     }
 });
 
 server8000.listen(8000);
+
+const server8080 = http.createServer(routes);
+
+server8080.listen(8080);
