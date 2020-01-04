@@ -1,4 +1,4 @@
-const products = [];
+const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
     // console.log("Another middleware!");
@@ -27,7 +27,9 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
     const { title } = req.body;
-    products.push({ title: title });
+    // products.push({ title: title });
+    const product = new Product(title);
+    product.save();
     res.redirect('/');
 };
 
@@ -51,9 +53,15 @@ exports.getProducts = (req, res, next) => {
     //     productsCSS: true
     // });
 
-    res.render('shop', {
-        products: products,
-        pageTitle: 'Shop',
-        path: '/'
-    });
-}
+    const products = Product.fetchAll(
+        products => {
+            res.render('shop', {
+                products: products,
+                pageTitle: 'Shop',
+                path: '/',
+                hasProducts: products.length > 0,
+                activeShop: true,
+                productsCSS: true
+            });
+        });
+};
