@@ -15,6 +15,10 @@ main {
   margin: auto;
 }
 
+a {
+  text-decoration: none;
+}
+
 .main-header {
   width: 100%;
   height: 3.5rem;
@@ -83,13 +87,15 @@ main {
 }
 
 .card__actions {
-    padding: 1rem;
-    text-align: center;
+  padding: 1rem;
+  text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .card__actions button,
 .card__actions a {
-    margin: 0 0.25rem;
+  margin: 0 0.25rem;
 }
 
 .btn {
@@ -99,10 +105,15 @@ main {
   background: white;
   border-radius: 3px;
   cursor: pointer;
+  padding: 4px 16px;
 }
 
 .btn:hover,
 .btn:active {
   background-color: #00695c;
   color: white;
+}
+
+.centered {
+  text-align: center;
 }
